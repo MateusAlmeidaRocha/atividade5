@@ -1,0 +1,80 @@
+//a quinta pergunta não conseguir comprender e responder então eu pedi ajuda para Chatgpt e esse foi o codico que ele deu
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Labirinto {
+    
+    
+    private static final int[] DIRECAO_X = {-1, 1, 0, 0};
+    private static final int[] DIRECAO_Y = {0, 0, -1, 1};
+    
+    public static void main(String[] args) {
+        int[][] labirinto = {
+            {0, 1, 0, 0},
+            {0, 0, 0, 1},
+            {1, 0, 1, 0},
+            {0, 0, 0, 0}
+        };
+        int comprimento = encontrarCaminhoMaisCurto(labirinto);
+        System.out.println(comprimento); // Saída esperada: 7
+    }
+    
+    public static int encontrarCaminhoMaisCurto(int[][] labirinto) {
+        if (labirinto == null || labirinto.length == 0 || labirinto[0].length == 0) {
+            return -1;
+        }
+        
+        int linhas = labirinto.length;
+        int colunas = labirinto[0].length;
+        
+       
+        if (labirinto[0][0] == 1 || labirinto[linhas - 1][colunas - 1] == 1) {
+            return -1;
+        }
+        
+        
+        boolean[][] visitado = new boolean[linhas][colunas];
+        Queue<Posicao> fila = new LinkedList<>();
+        
+        
+        fila.add(new Posicao(0, 0, 0));
+        visitado[0][0] = true;
+        
+        while (!fila.isEmpty()) {
+            Posicao pos = fila.poll();
+            
+            
+            if (pos.x == linhas - 1 && pos.y == colunas - 1) {
+                return pos.comprimento;
+            }
+            
+            
+            for (int i = 0; i < DIRECAO_X.length; i++) {
+                int novoX = pos.x + DIRECAO_X[i];
+                int novoY = pos.y + DIRECAO_Y[i];
+                
+                if (ehValido(novoX, novoY, linhas, colunas, labirinto, visitado)) {
+                    fila.add(new Posicao(novoX, novoY, pos.comprimento + 1));
+                    visitado[novoX][novoY] = true;
+                }
+            }
+        }
+        
+        
+        return -1;
+    }
+    
+    private static boolean ehValido(int x, int y, int linhas, int colunas, int[][] labirinto, boolean[][] visitado) {
+        return x >= 0 && x < linhas && y >= 0 && y < colunas && labirinto[x][y] == 0 && !visitado[x][y];
+    }
+    
+    static class Posicao {
+        int x, y, comprimento;
+        
+        Posicao(int x, int y, int comprimento) {
+            this.x = x;
+            this.y = y;
+            this.comprimento = comprimento;
+        }
+    }
+}
